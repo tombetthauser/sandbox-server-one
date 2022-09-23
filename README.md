@@ -48,3 +48,9 @@ Playing around with my first at-home server. No particular purpose, just enjoyin
 * this would minimize processing and pivot to simple file serving when possible
 * supposidly this saves power but is more about simplicity for simplicity's sake
 * in any case I went with just a simple express app serving ejs templates for now
+
+
+--- 
+
+## The Server File
+* 
