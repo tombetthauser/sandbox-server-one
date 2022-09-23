@@ -30,3 +30,21 @@ Playing around with my first at-home server. No particular purpose, just enjoyin
 * now test it by turning off the wifi on your phone and going to your router's ip address in a browser
 * you should see your `hello world!` page
 * this is accessible anywhere now!
+
+---
+
+## Just a Backend and Templates
+* just playing around with this
+* no particular reason to avoid a db except simplicity
+* started off using just a form in an index.html file
+* realized this would lead naturally to needing a backend api running on another port maybe
+* seemed unecessary
+* decided to pivot early to just having an express app running
+* this can serve static html files or ejs files
+* ejs files require processing which complicates things
+* in fact the express app itself is probably requiring unecessary processing / power
+* this could all work with a static html form and a static page generator
+* the generator could just be a bash script that rebuilt html pages when necessary based on user input from forms
+* this would minimize processing and pivot to simple file serving when possible
+* supposidly this saves power but is more about simplicity for simplicity's sake
+* in any case I went with just a simple express app serving ejs templates for now
