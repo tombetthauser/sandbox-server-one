@@ -33,7 +33,7 @@ Playing around with my first at-home server. No particular purpose, just enjoyin
 
 ---
 
-## Just a Backend and Templates
+## Just a Templates Backend
 * just playing around with this
 * no particular reason to avoid a db except simplicity
 * started off using just a form in an index.html file
@@ -53,4 +53,71 @@ Playing around with my first at-home server. No particular purpose, just enjoyin
 --- 
 
 ## The Server File
-* 
+```javascript
+const express = require('express'); 
+const multer = require('multer');
+const bodyParser = require('body-parser');
+const path = require("path");
+const fs = require('fs');
+
+const port = 80;
+const app = express();
+
+app.set('view engine', 'ejs');
+app.get("/", express.static(path.join(__dirname, "./stuff")));
+app.use(express.static('./stuff'));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const upload = multer({ dest: "/images"});
+
+app.get('/', (req, res) => {
+    fs.readFile('./stuff/database.txt', 'utf8', (err, data) => {
+        console.log(`--> fetching database - ${Date.now()}`);
+        if (err) console.log(`--> error - ${err} - ${Date.now()}`);
+        else console.log(`--> database fetched! - ${Date.now()}`);
+        res.render('home', {data: data.split(/\r?\n/)});
+    });
+});
+
+app.post('/', (req, res) => {
+    console.log(`--> posting text - ${Date.now()}`);
+    fs.appendFile('./stuff/database.txt', `\n${req.body.test}`, err => {
+        if (err) console.log(`--> error - ${err} - ${Date.now()}`);
+        else console.log(`--> post successful! - ${Date.now()}`);
+        res.redirect('/');
+    })
+})
+
+
+app.post("/upload", upload.single("file"), (req, res) => {
+    console.log(`--> posting image - ${Date.now()}`);
+
+    const filePath = req.file.path;
+    const fileName = Date.now() + '-' + req.file.originalname
+        
+    fs.appendFile('./stuff/database.txt', `\n<img>./images/${fileName}`, err => {
+        if (err) console.log(`--> error - ${err} - ${Date.now()}`);
+        else {
+            console.log(`--> image added to database! - ${Date.now()}`);
+            const newPath = path.join(__dirname, `./stuff/images/${fileName}`);
+            fs.rename(filePath, newPath, err => {
+                if (err) return console.log(`--> error - ${err} - ${Date.now()}`);
+                else console.log(`--> image added to file system! - ${Date.now()}`);
+            });
+        }
+    })
+    res.redirect('/')
+});
+
+
+app.post('/delete', (req, res) => {
+    console.log(`--> deleting everything - ${Date.now()}`);
+    fs.writeFile('./stuff/database.txt', "", err => {
+        if (err) console.log(err);
+        else console.log(`--> everything deleted! - ${Date.now()}`);
+        res.redirect('/');
+    })
+})
+
+app.listen(port, () => console.log(`--> listening on port ${port} - ${Date.now()}`));
+```
